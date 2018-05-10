@@ -1,1 +1,14 @@
-wtwgw
+public static Map<String, Object> refCommitDetail(Repository repository, String objectId)
+			throws IOException, GitAPIException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try (RevWalk walk = new RevWalk(repository)) {
+			RevCommit commit = walk.parseCommit(ObjectId.fromString(objectId));
+			map.put("fullMessage", commit.getFullMessage());
+			map.put("Author", commit.getAuthorIdent().getName());
+			map.put("commitTime", commit.getCommitTime());
+			String string = repository.getConfig().getString("remote", "origin", "url");
+			map.put("remote", string);
+			walk.dispose();
+		}
+		return map;
+	}
